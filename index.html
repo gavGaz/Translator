@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Language Translator</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+  <div class="container-fluid">
+	  <div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Source Text</h3>
+					</div>
+					<div class="panel-body">
+						<textarea id="source" class="form-control" rows="10" type="text" placeholder="Text to translate..."></textarea>
+					</div>
+				</div>
+			</div>
+	  </div>
+	  <div class="row">
+		<div class="col-md-6">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">Polish</h3>
+				</div>
+				<div class="panel-body">
+					<textarea id="pl" class="form-control" rows="10" type="text" placeholder="Text to translate..."></textarea>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">Romanian</h3>
+				</div>
+				<div class="panel-body">
+					<textarea id="ro" class="form-control" rows="10" type="text" placeholder="Text to translate..."></textarea>
+				</div>
+			</div>
+		</div>
+	  </div>
+	</div>
+    
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+	<script>
+		var g_token = '';
+		var curr_lang = 'pl';
+
+		// TODO: Need to cater for backspace!!!
+			var keyKeys = [13, 		// enter
+						   63,		// question mark
+						   161,		// exclamation
+						   186,		// semi-colon
+						   188,		// comma
+						   190 		// period
+						   ]
+						   
+		$(document).ready(function () {
+			$("#source").on('keyup',function(e){
+				if($.inArray(e.which, keyKeys) != -1){
+					var src = $("#source").val();
+					translate(src, "en", "pl");
+					translate(src, "en", "fr");
+				}
+			});
+			 // Get an access token now.  Good for 10 minutes.
+		  getToken();
+		  // Get a new one every 9 minutes.
+		  setInterval(getToken, 9 * 60 * 1000);
+		});
+		
+		function getToken() {
+		  var requestStr = "token.php";
+		  $.ajax({
+			url: requestStr,
+			type: "GET",
+			cache: true,
+			dataType: 'json',
+			success: function (data) {
+			  g_token = data.access_token;
+			}
+		  });
+		}
+
+        function translate(text, from, to) {
+		  var p = new Object;
+		  p.text = text;
+		  p.from = from;
+		  p.to = to;
+		  
+		  // A major puzzle solved.  Who would have guessed you specify the jsonp callback in oncomplete?
+		  p.oncomplete = 'ajaxTranslateCallback';
+		  
+		 // Another major puzzle.  The authentication is supplied in the deprecated appId param.
+		  p.appId = "Bearer " + g_token;
+		  var requestStr = "http://api.microsofttranslator.com/V2/Ajax.svc/Translate";
+
+		  $.ajax({
+		    url: requestStr,
+		    type: "GET",
+		    data: p,
+		    dataType: 'jsonp',
+		    cache: true,
+		  });
+		}
+
+
+		function ajaxTranslateCallback(response) {
+		  // Display translated text in the right textarea.
+		  $("#" + curr_lang).val(response);
+		  alert(response);
+		}
+
+		function translateSourceTarget() {
+		  // Translate the text typed by the user into the main text area.
+		  var src = $("#source").val();
+		  translate(src, "en", "fr");
+		}
+	</script>
+  </body>
+</html>
