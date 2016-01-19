@@ -26,7 +26,7 @@
 						<h3 class="panel-title">Translated Text</h3>
 					</div>
 					<div class="panel-body">
-						<textarea id="translatedSource" class="form-control" rows="10" type="text" placeholder="Translated text will go here..."></textarea>
+						<textarea disabled id="translatedSource" class="form-control" rows="10" type="text" placeholder="Translated text will go here..."></textarea>
 					</div>
 				</div>
 			</div>
@@ -50,7 +50,7 @@
 					<h3 class="panel-title">Polish</h3>
 				</div>
 				<div class="panel-body">
-					<textarea id="pl" class="form-control" rows="10" type="text" placeholder="Text to translate..."></textarea>
+					<textarea disabled id="pl" class="form-control" rows="10" type="text" placeholder="Text to translate..."></textarea>
 				</div>
 			</div>
 		</div>
@@ -60,7 +60,7 @@
 					<h3 class="panel-title">Romanian</h3>
 				</div>
 				<div class="panel-body">
-					<textarea id="ro" class="form-control" rows="10" type="text" placeholder="Text to translate..."></textarea>
+					<textarea disabled id="ro" class="form-control" rows="10" type="text" placeholder="Text to translate..."></textarea>
 				</div>
 			</div>
 		</div>
@@ -165,7 +165,7 @@
 		// Translation request callback
 		function ajaxTranslateCallback(response) {
 		  // Display translated text in the right textarea.
-		  $("#" + temp_langs[0]).val(response);
+		  $("#" + temp_langs[0]).append(response);
 		  // Remove translated language from our queue
 		  temp_langs.shift();
 		  queueTranslations();
