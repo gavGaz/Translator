@@ -166,9 +166,8 @@
 		// Translation request callback
 		function ajaxTranslateCallback(response) {
 		  // Display translated text in the right textarea.
-		  var textarea = $("#" + temp_langs[0])
-		  textarea.append(response);
-		  textarea.scrollTop = textarea.scrollHeight;
+		  $("#" + temp_langs[0]).append(response);
+		  $("#" + temp_langs[0]).scrollTop($("#" + temp_langs[0])[0].scrollHeight);
 		  // Remove translated language from our queue
 		  temp_langs.shift();
 		  queueTranslations();
