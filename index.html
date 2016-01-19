@@ -97,7 +97,8 @@
 			// Detect whenever a keyup event occurs
 			$("#source").on('keyup',function(e){
 				// If the key up is one we're interested in (punctuation)
-				if($.inArray(e.which, keyKeys) != -1){
+				//if($.inArray(e.which, keyKeys) != -1){
+				if(e.which == 13) {
 					// Set our languages to translate
 					temp_langs = langs.slice(0);
 					// Get the text to translate
@@ -165,7 +166,9 @@
 		// Translation request callback
 		function ajaxTranslateCallback(response) {
 		  // Display translated text in the right textarea.
-		  $("#" + temp_langs[0]).append(response);
+		  var textarea = $("#" + temp_langs[0])
+		  textarea.append(response);
+		  textarea.scrollTop = textarea.scrollHeight;
 		  // Remove translated language from our queue
 		  temp_langs.shift();
 		  queueTranslations();
