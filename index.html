@@ -105,6 +105,7 @@
 					src = $("#source").val();
 					// Append translated text to translatedText field
 					$("#translatedSource").append(src);
+					$("#translatedSource").scrollTop($("#translatedSource")[0].scrollHeight);
 					// Clear translate input ready for next input
 					$("#source").val("");
 					// Start queuing translation
