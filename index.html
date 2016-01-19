@@ -62,7 +62,10 @@
     <script src="js/bootstrap.min.js"></script>
 	<script>
 		var g_token = '';
-		var curr_lang = 'pl';
+		var langs = ['pl', 'ro'];
+		var temp_langs = [];
+		var fromLang = 'en'
+		var src = '';
 
 		// TODO: Need to cater for backspace!!!
 			var keyKeys = [13, 		// enter
@@ -76,9 +79,11 @@
 		$(document).ready(function () {
 			$("#source").on('keyup',function(e){
 				if($.inArray(e.which, keyKeys) != -1){
-					var src = $("#source").val();
-					translate(src, "en", "pl");
-					translate(src, "en", "fr");
+					temp_langs = langs;
+					src = $("#source").val();
+					queueTranslations();
+					//translate(src, "en", "pl");
+					//translate(src, "en", "fr");
 				}
 			});
 			 // Get an access token now.  Good for 10 minutes.
@@ -98,6 +103,13 @@
 			  g_token = data.access_token;
 			}
 		  });
+		}
+		
+		function queueTranslations(){
+			if (temp_langs.length > 0){
+				translate(src, fromLang, temp_langs[0])
+			}
+		
 		}
 
         function translate(text, from, to) {
@@ -125,7 +137,9 @@
 
 		function ajaxTranslateCallback(response) {
 		  // Display translated text in the right textarea.
-		  $("#" + curr_lang).val(response);
+		  $("#" + temp_langs[0]).val(response);
+		  temp_langs.shift();
+		  queueTranslations();
 		  alert(response);
 		}
 
