@@ -61,10 +61,15 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
 	<script>
+		// This will hold our Bing API token
 		var g_token = '';
+		// Languages being translated to
 		var langs = ['pl', 'ro'];
+		// Stores languages currently being translated
 		var temp_langs = [];
+		// Source language (hardcoded for now to English)
 		var fromLang = 'en'
+		// Will contain source text to be translated
 		var src = '';
 
 		// TODO: Need to cater for backspace!!!
@@ -77,13 +82,16 @@
 						   ]
 						   
 		$(document).ready(function () {
+			// Detect whenever a keyup event occurs
 			$("#source").on('keyup',function(e){
+				// If the key up is one we're interested in (punctuation)
 				if($.inArray(e.which, keyKeys) != -1){
+					// Set our languages to translate
 					temp_langs = langs;
+					// Get the text to translate
 					src = $("#source").val();
+					// Start queuing translation
 					queueTranslations();
-					//translate(src, "en", "pl");
-					//translate(src, "en", "fr");
 				}
 			});
 			 // Get an access token now.  Good for 10 minutes.
@@ -92,19 +100,22 @@
 		  setInterval(getToken, 9 * 60 * 1000);
 		});
 		
+		// This function gets a Bing API token
 		function getToken() {
-		  var requestStr = "token.php";
-		  $.ajax({
-			url: requestStr,
-			type: "GET",
-			cache: true,
-			dataType: 'json',
-			success: function (data) {
-			  g_token = data.access_token;
-			}
-		  });
+			// We have to use a PHP script to get the token as their is no easy JavaScript code
+			var requestStr = "token.php";
+			$.ajax({
+				url: requestStr,
+				type: "GET",
+				cache: true,
+				dataType: 'json',
+				success: function (data) {
+				  g_token = data.access_token;
+				}
+			});
 		}
 		
+		// Simple function to queue translations if there are any translations required
 		function queueTranslations(){
 			if (temp_langs.length > 0){
 				translate(src, fromLang, temp_langs[0])
@@ -112,6 +123,7 @@
 		
 		}
 
+		// Calls the Bing/Microsoft translation API
         function translate(text, from, to) {
 		  var p = new Object;
 		  p.text = text;
@@ -134,19 +146,13 @@
 		  });
 		}
 
-
+		// Translation request callback
 		function ajaxTranslateCallback(response) {
 		  // Display translated text in the right textarea.
 		  $("#" + temp_langs[0]).val(response);
+		  // Remove translated language from our queue
 		  temp_langs.shift();
 		  queueTranslations();
-		  alert(response);
-		}
-
-		function translateSourceTarget() {
-		  // Translate the text typed by the user into the main text area.
-		  var src = $("#source").val();
-		  translate(src, "en", "fr");
 		}
 	</script>
   </body>
