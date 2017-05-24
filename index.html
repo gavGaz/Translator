@@ -124,11 +124,11 @@
 			var requestStr = "token.php";
 			$.ajax({
 				url: requestStr,
-				type: "GET",
+				type: "POST",
 				cache: true,
-				dataType: 'json',
+				dataType: 'text',
 				success: function (data) {
-				  g_token = data.access_token;
+				  g_token = data;
 				}
 			});
 		}
@@ -153,13 +153,17 @@
 		  
 		 // Another major puzzle.  The authentication is supplied in the deprecated appId param.
 		  p.appId = "Bearer " + g_token;
-		  var requestStr = "http://api.microsofttranslator.com/V2/Ajax.svc/Translate";
+		  var requestStr = "https://api.microsofttranslator.com/V2/Http.svc/Translate?text=" + text + "&from=" + from + "&to=" + to;
 
 		  $.ajax({
 		    url: requestStr,
-		    type: "GET",
-		    data: p,
-		    dataType: 'jsonp',
+				headers: { 
+					'Authorization': p.appId, 
+					'Content-Type': 'text/xml', 
+					'Access-Control-Allow-Origin': '*',
+					'Access-Control-Allow-Methods': 'POST, OPTIONS'
+				},
+		    type: "POST",
 		    cache: true,
 		  });
 		}
