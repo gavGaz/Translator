@@ -142,36 +142,23 @@
 		}
 
 		// Calls the Bing/Microsoft translation API
-        function translate(text, from, to) {
-		  var p = new Object;
-		  p.text = text;
-		  p.from = from;
-		  p.to = to;
-		  
-		  // A major puzzle solved.  Who would have guessed you specify the jsonp callback in oncomplete?
-		  p.oncomplete = 'ajaxTranslateCallback';
-		  
+        function translate(text, from, to) {		  
 		 // Another major puzzle.  The authentication is supplied in the deprecated appId param.
-		  p.appId = "Bearer " + g_token;
-		  var requestStr = "https://api.microsofttranslator.com/V2/Http.svc/Translate?text=" + text + "&from=" + from + "&to=" + to;
+		  var appId = "Bearer " + g_token;
+		  var requestStr = "https://api.microsofttranslator.com/V2/Http.svc/Translate?appid=" + appId + "&text=" + text + "&from=" + from + "&to=" + to;
 
 		  $.ajax({
 		    url: requestStr,
-				headers: { 
-					'Authorization': p.appId, 
-					'Content-Type': 'text/xml', 
-					'Access-Control-Allow-Origin': '*',
-					'Access-Control-Allow-Methods': 'POST, OPTIONS'
-				},
-		    type: "POST",
+		    type: "GET",
 		    cache: true,
+			success: ajaxTranslateCallback
 		  });
 		}
 
 		// Translation request callback
 		function ajaxTranslateCallback(response) {
 		  // Display translated text in the right textarea.
-		  $("#" + temp_langs[0]).append(response);
+		  $("#" + temp_langs[0]).append(response.firstChild.textContent);
 		  $("#" + temp_langs[0]).scrollTop($("#" + temp_langs[0])[0].scrollHeight);
 		  // Remove translated language from our queue
 		  temp_langs.shift();
